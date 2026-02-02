@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>اختبار الذكاء الاصطناعي المتقدم</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+        .test-section { margin: 30px 0; padding: 20px; border: 2px solid #6f42c1; background: #f8f9fa; border-radius: 10px; }
+        .test-case { margin: 15px 0; padding: 15px; border: 1px solid #ddd; background: white; border-radius: 5px; }
+        .result { margin: 10px 0; padding: 15px; border: 1px solid #ccc; background: #fafafa; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; font-weight: bold; }
+        .transaction { margin: 10px 0; padding: 10px; border: 1px solid #eee; background: #f9f9f9; border-radius: 3px; }
+        button { padding: 12px 25px; margin: 8px; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; background: #6f42c1; color: white; }
+        h1 { color: #6f42c1; text-align: center; }
+        h2 { color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 5px; }
+        .feature-highlight { background: #f3e5f5; padding: 15px; border-left: 4px solid #6f42c1; margin: 15px 0; }
+        .challenge { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧠 الذكاء الاصطناعي المتقدم</h1>
+    
+    <div class="feature-highlight">
+        <h3>🚀 الذكاء الجديد:</h3>
+        <ul>
+            <li><strong>🔍 تحليل السياق:</strong> يفهم الموقف كاملاً مش بس الكلمات</li>
+            <li><strong>🧠 تفكير منطقي:</strong> يربط بين الأفعال والأماكن والأشياء</li>
+            <li><strong>🎯 قرارات ذكية:</strong> يقدر يتعامل مع حالات جديدة مخطرتش على البال</li>
+            <li><strong>📊 تحليل متعدد المستويات:</strong> يحلل الفعل + الشيء + المكان</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔥 اختبار الحالات الصعبة (من مثالك)</h2>
+        
+        <div class="test-case">
+            <h4>🚌 "رحت المدرسة بالباص بعشر جنيه"</h4>
+            <p><strong>التحدي:</strong> مش مذكور كلمة "تذكرة" بس واضح إنها مواصلات</p>
+            <p><strong>المتوقع:</strong> Transportation</p>
+            <button onclick="testSchoolBus()">اختبار المدرسة بالباص</button>
+            <div id="result-school-bus" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>💊 "رحت الصيدلية جبت دواء اسبرين بمتين جنيه"</h4>
+            <p><strong>التحدي:</strong> "متين" = 200، و "صيدلية" مكتوبة "سيدالية"</p>
+            <p><strong>المتوقع:</strong> Health & Beauty + 200 EGP</p>
+            <button onclick="testPharmacyAspirin()">اختبار الصيدلية والاسبرين</button>
+            <div id="result-pharmacy" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🧀 "جبت جبنة رومي من السوبرماركت بخمسين جنيه"</h4>
+            <p><strong>التحدي:</strong> "جبنة رومي" نوع جبنة مصري</p>
+            <p><strong>المتوقع:</strong> Food & Drinks</p>
+            <button onclick="testRomiCheese()">اختبار الجبنة الرومي</button>
+            <div id="result-cheese" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 اختبار حالات جديدة (مخطرتش على البال)</h2>
+        
+        <div class="test-case">
+            <h4>🏥 "رحت المستشفى بالتاكسي بعشرين جنيه"</h4>
+            <p><strong>التحدي:</strong> حالة جديدة - مستشفى + تاكسي</p>
+            <p><strong>المتوقع:</strong> Transportation (لأن التكلفة للتاكسي)</p>
+            <button onclick="testHospitalTaxi()">اختبار المستشفى بالتاكسي</button>
+            <div id="result-hospital" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🎓 "رحت الجامعة بالمترو بخمسة جنيه"</h4>
+            <p><strong>التحدي:</strong> جامعة + مترو - حالة تعليمية</p>
+            <p><strong>المتوقع:</strong> Transportation</p>
+            <button onclick="testUniversityMetro()">اختبار الجامعة بالمترو</button>
+            <div id="result-university" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>💼 "رحت الشغل بالأوبر بتلاتين جنيه"</h4>
+            <p><strong>التحدي:</strong> شغل + أوبر + "تلاتين" = 30</p>
+            <p><strong>المتوقع:</strong> Transportation</p>
+            <button onclick="testWorkUber()">اختبار الشغل بالأوبر</button>
+            <div id="result-work" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🍕 "طلبت بيتزا من المطعم بمية جنيه"</h4>
+            <p><strong>التحدي:</strong> "طلبت" فعل جديد + "مية" = 100</p>
+            <p><strong>المتوقع:</strong> Food & Drinks</p>
+            <button onclick="testOrderPizza()">اختبار طلب البيتزا</button>
+            <div id="result-pizza" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌟 اختبار الذكاء المتقدم</h2>
+        
+        <div class="test-case">
+            <h4>🔄 "دفعت فلوس للكهربا مائتين جنيه"</h4>
+            <p><strong>التحدي:</strong> "فلوس" + "كهربا" + "مائتين" = 200</p>
+            <p><strong>المتوقع:</strong> Bills & Utilities</p>
+            <button onclick="testElectricityBill()">اختبار فاتورة الكهرباء</button>
+            <div id="result-electricity" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🎬 "رحت السينما شفت فيلم بسبعين جنيه"</h4>
+            <p><strong>التحدي:</strong> سينما + فيلم + "سبعين" = 70</p>
+            <p><strong>المتوقع:</strong> Entertainment</p>
+            <button onclick="testCinemaMovie()">اختبار السينما والفيلم</button>
+            <div id="result-cinema" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(text, description, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = `<h4>🔄 جاري اختبار الذكاء: ${description}</h4><p>النص: ${text}</p><p>انتظر...</p>`;
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: 'auto'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<h4 class="success">🧠 نتيجة الذكاء: ${description}</h4>`;
+                    html += `<p><strong>النص:</strong> ${text}</p>`;
+                    html += `<p class="info"><strong>🌐 اللغة:</strong> ${data.data.analysis.language_detected}</p>`;
+                    html += `<h5>📊 التحليل الذكي:</h5>`;
+                    
+                    if (data.data.analysis.transactions.length === 0) {
+                        html += `<p class="error">❌ لم يتم العثور على معاملات!</p>`;
+                    } else {
+                        data.data.analysis.transactions.forEach((t, i) => {
+                            html += `<div class="transaction">`;
+                            html += `<strong>🧠 معاملة ذكية ${i+1}:</strong><br>`;
+                            html += `💰 المبلغ: <span style="color: #28a745; font-weight: bold;">${t.amount || 'غير محدد'} EGP</span><br>`;
+                            html += `🏷️ الفئة الذكية: <span style="color: #6f42c1; font-weight: bold; font-size: 16px;">${t.category}</span><br>`;
+                            html += `📦 الصنف: ${t.item}<br>`;
+                            html += `📍 المكان: ${t.merchant || 'غير محدد'}<br>`;
+                            html += `🎯 الثقة: ${Math.round(t.confidence_score * 100)}%<br>`;
+                            html += `📝 النص المحلل: ${t.extracted_text}<br>`;
+                            html += `</div>`;
+                        });
+                    }
+                    
+                    // Intelligence validation
+                    const categories = data.data.analysis.transactions.map(t => t.category);
+                    const amounts = data.data.analysis.transactions.map(t => t.amount).filter(a => a !== null);
+                    
+                    html += `<h5>🧠 تقييم الذكاء:</h5>`;
+                    
+                    // Check amount extraction
+                    if (amounts.length > 0) {
+                        html += `<p class="success">✅ استخراج المبالغ: ${amounts.join(', ')} EGP</p>`;
+                    } else {
+                        html += `<p class="error">❌ لم يتم استخراج المبالغ بشكل صحيح</p>`;
+                    }
+                    
+                    // Check categorization
+                    const uniqueCategories = [...new Set(categories)];
+                    html += `<p class="info">🏷️ الفئات المكتشفة: ${uniqueCategories.join(', ')}</p>`;
+                    
+                    html += `<h5>📈 الملخص الذكي:</h5>`;
+                    html += `<p>📊 المعاملات: ${data.data.analysis.summary.total_transactions}</p>`;
+                    html += `<p>💸 المصروفات: ${data.data.analysis.summary.total_expenses} EGP</p>`;
+                    html += `<p>⚡ وقت المعالجة: ${data.data.analysis.processing_time_ms}ms</p>`;
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<h4 class="error">❌ خطأ: ${description}</h4><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h4 class="error">❌ خطأ في الشبكة: ${description}</h4><p>${error.message}</p>`;
+            }
+        }
+        
+        // Original challenging cases
+        function testSchoolBus() {
+            testAPI('رحت المدرسة النهارده بعشر جنيه بالباص', 'المدرسة بالباص', 'result-school-bus');
+        }
+        
+        function testPharmacyAspirin() {
+            testAPI('رحت السيدالية جبت دواء اسبرين بمتين جنيه', 'الصيدلية والاسبرين', 'result-pharmacy');
+        }
+        
+        function testRomiCheese() {
+            testAPI('انا رحت السوبرماركت جبت جبنة رومي بخمسين جنيه', 'الجبنة الرومي', 'result-cheese');
+        }
+        
+        // New challenging cases
+        function testHospitalTaxi() {
+            testAPI('رحت المستشفى بالتاكسي بعشرين جنيه', 'المستشفى بالتاكسي', 'result-hospital');
+        }
+        
+        function testUniversityMetro() {
+            testAPI('رحت الجامعة بالمترو بخمسة جنيه', 'الجامعة بالمترو', 'result-university');
+        }
+        
+        function testWorkUber() {
+            testAPI('رحت الشغل بالأوبر بتلاتين جنيه', 'الشغل بالأوبر', 'result-work');
+        }
+        
+        function testOrderPizza() {
+            testAPI('طلبت بيتزا من المطعم بمية جنيه', 'طلب البيتزا', 'result-pizza');
+        }
+        
+        // Advanced intelligence tests
+        function testElectricityBill() {
+            testAPI('دفعت فلوس للكهربا مائتين جنيه', 'فاتورة الكهرباء', 'result-electricity');
+        }
+        
+        function testCinemaMovie() {
+            testAPI('رحت السينما شفت فيلم بسبعين جنيه', 'السينما والفيلم', 'result-cinema');
+        }
+    </script>
+</body>
+</html>

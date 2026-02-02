@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Categorization API</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Test Improved Categorization</h1>
+    
+    <div>
+        <h2>Test Cases:</h2>
+        <button onclick="testCoffee()">Test Coffee (should be طعام وشراب)</button><br><br>
+        <button onclick="testTrainTicket()">Test Train Ticket (should be مواصلات)</button><br><br>
+        <button onclick="testPharmacy()">Test Pharmacy (should be صحة وجمال)</button><br><br>
+        <button onclick="testOriginalComplaint()">Test Original User Complaint</button><br><br>
+    </div>
+    
+    <div id="results" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9;">
+        Results will appear here...
+    </div>
+
+    <script>
+        async function testAPI(text, description) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<h3>Testing: ${description}</h3><p>Text: ${text}</p><p>Loading...</p>`;
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: 'ar'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<h3>✅ Success: ${description}</h3>`;
+                    html += `<p><strong>Text:</strong> ${text}</p>`;
+                    html += `<h4>Transactions Found:</h4>`;
+                    
+                    data.data.analysis.transactions.forEach((t, i) => {
+                        html += `<div style="margin: 10px 0; padding: 10px; border: 1px solid #ddd;">`;
+                        html += `<strong>Transaction ${i+1}:</strong><br>`;
+                        html += `Amount: ${t.amount} EGP<br>`;
+                        html += `Category: <span style="color: blue; font-weight: bold;">${t.category}</span><br>`;
+                        html += `Item: ${t.item}<br>`;
+                        html += `Place: ${t.merchant || 'N/A'}<br>`;
+                        html += `Text: ${t.extracted_text}<br>`;
+                        html += `</div>`;
+                    });
+                    
+                    // Check for issues
+                    const categories = data.data.analysis.transactions.map(t => t.category);
+                    if (categories.includes('أخرى')) {
+                        html += `<p style="color: red; font-weight: bold;">❌ ISSUE: Found 'أخرى' category - should be eliminated!</p>`;
+                    } else {
+                        html += `<p style="color: green; font-weight: bold;">✅ GOOD: No 'أخرى' category found!</p>`;
+                    }
+                    
+                    html += `<h4>Summary:</h4>`;
+                    html += `<pre>${JSON.stringify(data.data.analysis.summary, null, 2)}</pre>`;
+                    
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = `<h3>❌ Error: ${description}</h3><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<h3>❌ Network Error: ${description}</h3><p>${error.message}</p>`;
+            }
+        }
+        
+        function testCoffee() {
+            testAPI('جبت قهوة بعشر جنيه', 'Coffee Test');
+        }
+        
+        function testTrainTicket() {
+            testAPI('دفعت خمسين جنيه تذكرة قطار للإسكندرية', 'Train Ticket Test');
+        }
+        
+        function testPharmacy() {
+            testAPI('رحت الصيدلية واشتريت دواء بعشرين جنيه', 'Pharmacy Test');
+        }
+        
+        function testOriginalComplaint() {
+            testAPI('انا رحت كارفور وجبت حاجات بخمسين جنيه وجبت قهوة بعشر جنيه وبعدين رحت جبت تسكرة قطر بخمسين جنيه واركبت القطر وكلت جوه للقطر حاجات بمية جنيه', 'Original User Complaint');
+        }
+    </script>
+</body>
+</html>

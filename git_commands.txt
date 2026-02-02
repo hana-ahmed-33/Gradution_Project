@@ -1,0 +1,31 @@
+# خطوات الاتصال بالريبو والبرانش voice
+
+# 1. Initialize git repository
+git init
+
+# 2. Add remote repository
+git remote add origin https://github.com/hana-ahmed-33/Gradution_Project.git
+
+# 3. Fetch all branches from remote
+git fetch origin
+
+# 4. List all branches to see voice branch
+git branch -a
+
+# 5. Switch to voice branch (if it exists remotely)
+git checkout -b voice origin/voice
+
+# OR if voice branch doesn't exist remotely, create it:
+# git checkout -b voice
+
+# 6. Add all files
+git add .
+
+# 7. Commit changes
+git commit -m "feat: Enhanced Arabic voice recognition system"
+
+# 8. Push to voice branch
+git push -u origin voice
+
+# 9. Check status
+git status

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="محلل ذكي للمصاريف والدخل باستخدام الصوت والنص">
+    <meta name="theme-color" content="#667eea">
+    <title>محلل المصاريف الصوتي - AI Finance Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        #recordBtn {
+            background: #667eea;
+            color: white;
+        }
+
+        #recordBtn:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        #stopBtn {
+            background: #f56565;
+            color: white;
+        }
+
+        #stopBtn:hover:not(:disabled) {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            min-height: 30px;
+            color: #4a5568;
+        }
+
+        #result {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            direction: ltr;
+            text-align: left;
+        }
+
+        #result:empty::before {
+            content: "النتيجة ستظهر هنا...";
+            color: #a0aec0;
+            direction: rtl;
+        }
+
+        .error {
+            background: #fff5f5;
+            border-color: #fc8181;
+            color: #c53030;
+        }
+
+        .success {
+            background: #f0fff4;
+            border-color: #68d391;
+            color: #22543d;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .instructions {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .instructions h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #4a5568;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .upload-section {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .upload-section.dragover {
+            border-color: #667eea;
+            background: #e6fffa;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #4a5568;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 20px;
+            position: relative;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .upload-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎤 محلل المصاريف الصوتي</h1>
+
+        <div class="instructions">
+            <h3>📝 كيفية الاستخدام</h3>
+            <p>📤 ارفع ملف صوتي مباشرة، أو</p>
+            <p>🎙️ اضغط "بدء التسجيل" وقل جملة مثل: "دفعت 50 جنيه في كارفور على خضار"</p>
+            <p>💬 أو: "استلمت مرتب 5000 جنيه"</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📤</div>
+            <div class="upload-text">اضغط لرفع ملف صوتي أو اسحبه هنا</div>
+            <div class="upload-hint">WAV, MP3, M4A, OGG, WebM, FLAC (حد أقصى 10MB)</div>
+            <input type="file" id="fileInput" accept=".wav,.mp3,.m4a,.ogg,.webm,.flac,audio/*" />
+        </div>
+        <div class="file-info" id="fileInfo"></div>
+
+        <div class="divider">
+            <span>أو سجل صوتك مباشرة</span>
+        </div>
+
+        <!-- Recording Controls -->
+        <div class="controls">
+            <button id="recordBtn" aria-label="بدء التسجيل الصوتي">🎙️ بدء التسجيل</button>
+            <button id="stopBtn" disabled aria-label="إيقاف التسجيل">⏹️ إيقاف</button>
+        </div>
+
+        <div id="status" role="status" aria-live="polite"></div>
+        <div id="result" role="region" aria-label="نتيجة التحليل"></div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let stream = null;
+
+        const recordBtn = document.getElementById("recordBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const statusText = document.getElementById("status");
+        const resultBox = document.getElementById("result");
+        const uploadSection = document.getElementById("uploadSection");
+        const fileInput = document.getElementById("fileInput");
+        const fileInfo = document.getElementById("fileInfo");
+
+        function setStatus(message, isError = false) {
+            statusText.innerText = message;
+            statusText.className = isError ? 'error' : '';
+        }
+
+        function setResult(data, isError = false) {
+            resultBox.className = isError ? 'error' : 'success';
+            resultBox.innerText = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        }
+
+        function stopStream() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        async function uploadFile(file) {
+            // Validate file type
+            const allowedTypes = ['.wav', '.mp3', '.m4a', '.ogg', '.webm', '.flac'];
+            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+
+            if (!allowedTypes.includes(fileExt)) {
+                setStatus("❌ نوع الملف غير مدعوم. الأنواع المسموحة: WAV, MP3, M4A, OGG, WebM, FLAC", true);
+                return;
+            }
+
+            // Validate file size (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                setStatus("❌ الملف كبير جداً. الحد الأقصى 10MB", true);
+                return;
+            }
+
+            // Show file info
+            fileInfo.innerHTML = `📁 ${file.name} (${formatFileSize(file.size)})`;
+            fileInfo.classList.add('show');
+
+            // Upload file
+            const formData = new FormData();
+            formData.append("file", file);
+
+            setStatus("⏳ جاري رفع وتحليل الملف...");
+            resultBox.innerText = '';
+            resultBox.className = '';
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout for upload
+
+                const res = await fetch("/voice", {
+                    method: "POST",
+                    body: formData,
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `خطأ في الخادم: ${res.status}`);
+                }
+
+                const data = await res.json();
+                setStatus("✅ تم التحليل بنجاح");
+                setResult(data, false);
+
+            } catch (err) {
+                console.error('Upload error:', err);
+                if (err.name === 'AbortError') {
+                    setStatus("❌ انتهت مهلة الطلب. حاول مرة أخرى", true);
+                } else if (!navigator.onLine) {
+                    setStatus("❌ لا يوجد اتصال بالإنترنت", true);
+                } else {
+                    setStatus("❌ حدث خطأ: " + err.message, true);
+                }
+                setResult(err.message, true);
+            }
+        }
+
+        // File upload click
+        uploadSection.onclick = () => {
+            fileInput.click();
+        };
+
+        // File input change
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        };
+
+        // Drag and drop
+        uploadSection.ondragover = (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        };
+
+        uploadSection.ondragleave = () => {
+            uploadSection.classList.remove('dragover');
+        };
+
+        uploadSection.ondrop = (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        };
+
+        // Recording functionality
+        recordBtn.onclick = async () => {
+            try {
+                audioChunks = [];
+
+                // Check browser support
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('المتصفح لا يدعم تسجيل الصوت');
+                }
+
+                stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        channelCount: 1,
+                        sampleRate: 16000
+                    }
+                });
+
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg'
+                });
+
+                mediaRecorder.start();
+
+                setStatus("🎙️ جاري التسجيل... تحدث الآن");
+                recordBtn.disabled = true;
+                stopBtn.disabled = false;
+                resultBox.innerText = '';
+                resultBox.className = '';
+                fileInfo.classList.remove('show');
+
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) {
+                        audioChunks.push(e.data);
+                    }
+                };
+
+            } catch (err) {
+                console.error('Recording error:', err);
+                setStatus("❌ فشل الوصول للميكروفون: " + err.message, true);
+                stopStream();
+            }
+        };
+
+        stopBtn.onclick = () => {
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                return;
+            }
+
+            mediaRecorder.stop();
+            setStatus("⏳ جاري التحليل...");
+            recordBtn.disabled = false;
+            stopBtn.disabled = true;
+
+            mediaRecorder.onstop = async () => {
+                stopStream();
+
+                if (audioChunks.length === 0) {
+                    setStatus("❌ لم يتم تسجيل أي صوت", true);
+                    return;
+                }
+
+                const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+
+                // Check file size (10MB limit)
+                if (audioBlob.size > 10 * 1024 * 1024) {
+                    setStatus("❌ الملف كبير جداً. الحد الأقصى 10MB", true);
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("file", audioBlob, "voice.wav");
+
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+                    const res = await fetch("/voice", {
+                        method: "POST",
+                        body: formData,
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!res.ok) {
+                        const errorData = await res.json().catch(() => ({}));
+                        throw new Error(errorData.detail || `خطأ في الخادم: ${res.status}`);
+                    }
+
+                    const data = await res.json();
+                    setStatus("✅ تم التحليل بنجاح");
+                    setResult(data, false);
+
+                } catch (err) {
+                    console.error('Analysis error:', err);
+                    if (err.name === 'AbortError') {
+                        setStatus("❌ انتهت مهلة الطلب. حاول مرة أخرى", true);
+                    } else if (!navigator.onLine) {
+                        setStatus("❌ لا يوجد اتصال بالإنترنت", true);
+                    } else {
+                        setStatus("❌ حدث خطأ: " + err.message, true);
+                    }
+                    setResult(err.message, true);
+                }
+            };
+        };
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', stopStream);
+    </script>
+</body>
+
+</html>

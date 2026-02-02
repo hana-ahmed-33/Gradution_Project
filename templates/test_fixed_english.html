@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>اختبار الفئات الإنجليزية الثابتة</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+        .test-section { margin: 30px 0; padding: 20px; border: 2px solid #28a745; background: #f8f9fa; border-radius: 10px; }
+        .test-case { margin: 15px 0; padding: 15px; border: 1px solid #ddd; background: white; border-radius: 5px; }
+        .result { margin: 10px 0; padding: 15px; border: 1px solid #ccc; background: #fafafa; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; font-weight: bold; }
+        .transaction { margin: 10px 0; padding: 10px; border: 1px solid #eee; background: #f9f9f9; border-radius: 3px; }
+        button { padding: 12px 25px; margin: 8px; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; background: #28a745; color: white; }
+        h1 { color: #28a745; text-align: center; }
+        h2 { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        .feature-highlight { background: #e8f5e8; padding: 15px; border-left: 4px solid #28a745; margin: 15px 0; }
+        .category-list { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .category-item { display: inline-block; margin: 5px; padding: 8px 12px; background: #007bff; color: white; border-radius: 20px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>🎯 الفئات الإنجليزية الثابتة</h1>
+    
+    <div class="feature-highlight">
+        <h3>✅ الحل النهائي:</h3>
+        <ul>
+            <li><strong>🔒 فئات ثابتة:</strong> نفس الفئة دائماً بغض النظر عن اللغة</li>
+            <li><strong>🌍 عالمية:</strong> فئات إنجليزية يفهمها الجميع</li>
+            <li><strong>❌ لا تكرار:</strong> لن تجد "طعام وشراب" و "Food & Drinks" معاً</li>
+            <li><strong>📊 تحليل موحد:</strong> كل التقارير والإحصائيات موحدة</li>
+        </ul>
+    </div>
+
+    <div class="category-list">
+        <h3>📋 الفئات الثابتة:</h3>
+        <span class="category-item">Food & Drinks</span>
+        <span class="category-item">Transportation</span>
+        <span class="category-item">Shopping</span>
+        <span class="category-item">Health & Beauty</span>
+        <span class="category-item">Clothes & Fashion</span>
+        <span class="category-item">Bills & Utilities</span>
+        <span class="category-item">Entertainment</span>
+        <span class="category-item">Salary & Income</span>
+    </div>
+
+    <div class="test-section">
+        <h2>🗣️ اختبار الكلام العربي → فئات إنجليزية</h2>
+        
+        <div class="test-case">
+            <h4>☕ اختبار القهوة</h4>
+            <p><strong>النص:</strong> "اشتريت قهوة بـ25 جنيه من الكافيه"</p>
+            <p><strong>المتوقع:</strong> Food & Drinks</p>
+            <button onclick="testArabicCoffee()">اختبار القهوة العربي</button>
+            <div id="result-arabic-coffee" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🚌 اختبار المواصلات</h4>
+            <p><strong>النص:</strong> "دفعت 15 جنيه تذكرة اتوبيس للشغل"</p>
+            <p><strong>المتوقع:</strong> Transportation</p>
+            <button onclick="testArabicTransport()">اختبار المواصلات العربي</button>
+            <div id="result-arabic-transport" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🍫 اختبار الشوكولاتة</h4>
+            <p><strong>النص:</strong> "جبت شوكولاتة من المول بـ80 جنيه"</p>
+            <p><strong>المتوقع:</strong> Food & Drinks</p>
+            <button onclick="testArabicChocolate()">اختبار الشوكولاتة العربي</button>
+            <div id="result-arabic-chocolate" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🇺🇸 اختبار الكلام الإنجليزي → فئات إنجليزية</h2>
+        
+        <div class="test-case">
+            <h4>☕ Coffee Test</h4>
+            <p><strong>Text:</strong> "I bought coffee for 30 EGP from Starbucks"</p>
+            <p><strong>Expected:</strong> Food & Drinks</p>
+            <button onclick="testEnglishCoffee()">Test English Coffee</button>
+            <div id="result-english-coffee" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🚌 Transportation Test</h4>
+            <p><strong>Text:</strong> "I got a bus ticket for 20 EGP to work"</p>
+            <p><strong>Expected:</strong> Transportation</p>
+            <button onclick="testEnglishTransport()">Test English Transport</button>
+            <div id="result-english-transport" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🍫 Chocolate Test</h4>
+            <p><strong>Text:</strong> "I bought chocolate from the mall for 100 EGP"</p>
+            <p><strong>Expected:</strong> Food & Drinks</p>
+            <button onclick="testEnglishChocolate()">Test English Chocolate</button>
+            <div id="result-english-chocolate" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌍 اختبار الكلام المختلط → فئات إنجليزية</h2>
+        
+        <div class="test-case">
+            <h4>🔄 المثال الأصلي للمستخدم</h4>
+            <p><strong>النص:</strong> "أذهب إلى مونل عرب و أحصل على شوكولاتة باتشي بسعر 200 و أحصل على باس تاكيت بسعر 50"</p>
+            <p><strong>المتوقع:</strong> Food & Drinks + Transportation</p>
+            <button onclick="testOriginalExample()">اختبار المثال الأصلي</button>
+            <div id="result-original" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🔄 كلام مختلط متقدم</h4>
+            <p><strong>النص:</strong> "رحت carrefour واشتريت chips بـ30 جنيه و coffee بـ50 جنيه وبعدين جبت bus ticket بـ25 جنيه"</p>
+            <p><strong>المتوقع:</strong> Food & Drinks + Transportation</p>
+            <button onclick="testAdvancedMixed()">اختبار مختلط متقدم</button>
+            <div id="result-advanced" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(text, description, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = `<h4>🔄 جاري الاختبار: ${description}</h4><p>النص: ${text}</p><p>انتظر...</p>`;
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: 'auto'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<h4 class="success">✅ نجح: ${description}</h4>`;
+                    html += `<p><strong>النص:</strong> ${text}</p>`;
+                    html += `<p class="info"><strong>🌐 اللغة المكتشفة:</strong> ${data.data.analysis.language_detected}</p>`;
+                    html += `<h5>📊 المعاملات المستخرجة:</h5>`;
+                    
+                    if (data.data.analysis.transactions.length === 0) {
+                        html += `<p class="error">❌ لم يتم العثور على معاملات!</p>`;
+                    } else {
+                        data.data.analysis.transactions.forEach((t, i) => {
+                            html += `<div class="transaction">`;
+                            html += `<strong>Transaction ${i+1}:</strong><br>`;
+                            html += `💰 Amount: ${t.amount} EGP<br>`;
+                            html += `🏷️ Category: <span style="color: #007bff; font-weight: bold; font-size: 16px;">${t.category}</span><br>`;
+                            html += `📦 Item: ${t.item}<br>`;
+                            html += `📍 Place: ${t.merchant || 'Not specified'}<br>`;
+                            html += `📝 Extracted Text: ${t.extracted_text}<br>`;
+                            html += `</div>`;
+                        });
+                    }
+                    
+                    // Validation
+                    const categories = data.data.analysis.transactions.map(t => t.category);
+                    
+                    // Check for Arabic categories (should not exist)
+                    const hasArabicCategories = categories.some(cat => /[\u0600-\u06FF]/.test(cat));
+                    if (hasArabicCategories) {
+                        html += `<p class="error">❌ خطأ: وُجدت فئات عربية! يجب أن تكون كلها إنجليزية</p>`;
+                    } else {
+                        html += `<p class="success">✅ ممتاز: كل الفئات إنجليزية كما هو مطلوب!</p>`;
+                    }
+                    
+                    // Check for "أخرى" or "Other"
+                    if (categories.includes('أخرى') || categories.includes('Other')) {
+                        html += `<p class="error">❌ مشكلة: وُجدت فئة 'أخرى' أو 'Other'!</p>`;
+                    } else {
+                        html += `<p class="success">✅ ممتاز: لا توجد فئة 'أخرى'!</p>`;
+                    }
+                    
+                    // Show unique categories
+                    const uniqueCategories = [...new Set(categories)];
+                    html += `<p class="info">🏷️ الفئات المستخدمة: ${uniqueCategories.join(', ')}</p>`;
+                    
+                    html += `<h5>📈 الملخص:</h5>`;
+                    html += `<p>📊 إجمالي المعاملات: ${data.data.analysis.summary.total_transactions}</p>`;
+                    html += `<p>💸 إجمالي المصروفات: ${data.data.analysis.summary.total_expenses} EGP</p>`;
+                    html += `<p>🏷️ الفئات: ${JSON.stringify(data.data.analysis.summary.categories, null, 2)}</p>`;
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<h4 class="error">❌ خطأ: ${description}</h4><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h4 class="error">❌ Network Error: ${description}</h4><p>${error.message}</p>`;
+            }
+        }
+        
+        // Arabic tests
+        function testArabicCoffee() {
+            testAPI('اشتريت قهوة بـ25 جنيه من الكافيه', 'قهوة عربي', 'result-arabic-coffee');
+        }
+        
+        function testArabicTransport() {
+            testAPI('دفعت 15 جنيه تذكرة اتوبيس للشغل', 'مواصلات عربي', 'result-arabic-transport');
+        }
+        
+        function testArabicChocolate() {
+            testAPI('جبت شوكولاتة من المول بـ80 جنيه', 'شوكولاتة عربي', 'result-arabic-chocolate');
+        }
+        
+        // English tests
+        function testEnglishCoffee() {
+            testAPI('I bought coffee for 30 EGP from Starbucks', 'English Coffee', 'result-english-coffee');
+        }
+        
+        function testEnglishTransport() {
+            testAPI('I got a bus ticket for 20 EGP to work', 'English Transport', 'result-english-transport');
+        }
+        
+        function testEnglishChocolate() {
+            testAPI('I bought chocolate from the mall for 100 EGP', 'English Chocolate', 'result-english-chocolate');
+        }
+        
+        // Mixed tests
+        function testOriginalExample() {
+            testAPI('أذهب إلى مونل عرب و أحصل على شوكولاتة باتشي بسعر 200 و أحصل على باس تاكيت بسعر 50', 'المثال الأصلي', 'result-original');
+        }
+        
+        function testAdvancedMixed() {
+            testAPI('رحت carrefour واشتريت chips بـ30 جنيه و coffee بـ50 جنيه وبعدين جبت bus ticket بـ25 جنيه', 'مختلط متقدم', 'result-advanced');
+        }
+    </script>
+</body>
+</html>
