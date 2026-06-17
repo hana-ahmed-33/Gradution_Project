@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>اختبار النظام الديناميكي متعدد اللغات</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+        .test-section { margin: 30px 0; padding: 20px; border: 2px solid #007bff; background: #f8f9fa; border-radius: 10px; }
+        .test-case { margin: 15px 0; padding: 15px; border: 1px solid #ddd; background: white; border-radius: 5px; }
+        .result { margin: 10px 0; padding: 15px; border: 1px solid #ccc; background: #fafafa; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; font-weight: bold; }
+        .transaction { margin: 10px 0; padding: 10px; border: 1px solid #eee; background: #f9f9f9; border-radius: 3px; }
+        button { padding: 12px 25px; margin: 8px; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-arabic { background: #28a745; color: white; }
+        .btn-english { background: #007bff; color: white; }
+        .btn-mixed { background: #ffc107; color: black; }
+        h1 { color: #007bff; text-align: center; }
+        h2 { color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 5px; }
+        .feature-highlight { background: #e7f3ff; padding: 10px; border-left: 4px solid #007bff; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🌐 النظام الديناميكي متعدد اللغات</h1>
+    
+    <div class="feature-highlight">
+        <h3>🎯 الميزات الجديدة:</h3>
+        <ul>
+            <li><strong>🌍 استقلالية عن إعدادات النظام:</strong> يعمل بغض النظر عن لغة الجهاز</li>
+            <li><strong>🏷️ فئات ديناميكية:</strong> الفئات تظهر باللغة المكتشفة من الصوت</li>
+            <li><strong>🔄 مرونة كاملة:</strong> موبايل إنجليزي + كلام عربي = يعمل!</li>
+            <li><strong>🎙️ كشف تلقائي للغة:</strong> لا حاجة لتحديد اللغة مسبقاً</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🗣️ اختبار الكلام العربي (حتى لو الجهاز إنجليزي)</h2>
+        
+        <div class="test-case">
+            <h4>📱 سيناريو: موبايل إنجليزي + كلام عربي</h4>
+            <p><strong>النص:</strong> "رحت كارفور واشتريت شوكولاتة بـ50 جنيه وبعدين جبت تذكرة مترو بـ20 جنيه"</p>
+            <p><strong>المتوقع:</strong> فئات عربية (طعام وشراب، مواصلات)</p>
+            <button class="btn-arabic" onclick="testArabicSpeech()">اختبار الكلام العربي</button>
+            <div id="result-arabic" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🇺🇸 اختبار الكلام الإنجليزي (حتى لو الجهاز عربي)</h2>
+        
+        <div class="test-case">
+            <h4>📱 سيناريو: جهاز عربي + كلام إنجليزي</h4>
+            <p><strong>النص:</strong> "I went to the mall and bought chocolate for 100 EGP then got a bus ticket for 30 EGP"</p>
+            <p><strong>المتوقع:</strong> فئات إنجليزية (Food & Drinks, Transportation)</p>
+            <button class="btn-english" onclick="testEnglishSpeech()">Test English Speech</button>
+            <div id="result-english" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌍 اختبار الكلام المختلط</h2>
+        
+        <div class="test-case">
+            <h4>🔄 سيناريو: كلام مختلط (عربي + إنجليزي)</h4>
+            <p><strong>النص:</strong> "أذهب إلى مونل عرب و أحصل على شوكولاتة باتشي بسعر 200 و أحصل على باس تاكيت بسعر 50"</p>
+            <p><strong>المتوقع:</strong> فئات عربية مع فهم الكلمات الإنجليزية</p>
+            <button class="btn-mixed" onclick="testMixedSpeech()">اختبار الكلام المختلط</button>
+            <div id="result-mixed" class="result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 اختبارات متقدمة</h2>
+        
+        <div class="test-case">
+            <h4>🚌 اختبار "باس تاكيت" (كلمة مختلطة)</h4>
+            <p><strong>النص:</strong> "دفعت 25 جنيه باس تاكيت للشغل"</p>
+            <p><strong>المتوقع:</strong> مواصلات</p>
+            <button class="btn-mixed" onclick="testBusTicketMixed()">اختبار باس تاكيت</button>
+            <div id="result-bus" class="result"></div>
+        </div>
+
+        <div class="test-case">
+            <h4>🍫 اختبار "chocolate" بالإنجليزية في جملة عربية</h4>
+            <p><strong>النص:</strong> "رحت المول وجبت chocolate بـ80 جنيه"</p>
+            <p><strong>المتوقع:</strong> طعام وشراب</p>
+            <button class="btn-mixed" onclick="testChocolateMixed()">اختبار Chocolate مختلط</button>
+            <div id="result-chocolate" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(text, description, resultId, expectedLanguage = 'auto') {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = `<h4>🔄 جاري الاختبار: ${description}</h4><p>النص: ${text}</p><p>انتظر...</p>`;
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: 'auto'  // Always auto-detect
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<h4 class="success">✅ نجح: ${description}</h4>`;
+                    html += `<p><strong>النص:</strong> ${text}</p>`;
+                    html += `<p class="info"><strong>🌐 اللغة المكتشفة:</strong> ${data.data.analysis.language_detected}</p>`;
+                    html += `<h5>📊 المعاملات المستخرجة:</h5>`;
+                    
+                    if (data.data.analysis.transactions.length === 0) {
+                        html += `<p class="error">❌ لم يتم العثور على معاملات!</p>`;
+                    } else {
+                        data.data.analysis.transactions.forEach((t, i) => {
+                            html += `<div class="transaction">`;
+                            html += `<strong>معاملة ${i+1}:</strong><br>`;
+                            html += `💰 المبلغ: ${t.amount} جنيه<br>`;
+                            html += `🏷️ الفئة: <span style="color: blue; font-weight: bold;">${t.category}</span><br>`;
+                            html += `📦 الصنف: ${t.item}<br>`;
+                            html += `📍 المكان: ${t.merchant || 'غير محدد'}<br>`;
+                            html += `📝 النص المستخرج: ${t.extracted_text}<br>`;
+                            html += `</div>`;
+                        });
+                    }
+                    
+                    // Language-specific validation
+                    const categories = data.data.analysis.transactions.map(t => t.category);
+                    const detectedLang = data.data.analysis.language_detected;
+                    
+                    if (categories.includes('أخرى')) {
+                        html += `<p class="error">❌ مشكلة: وُجدت فئة 'أخرى' - يجب إزالتها!</p>`;
+                    } else {
+                        html += `<p class="success">✅ ممتاز: لا توجد فئة 'أخرى'!</p>`;
+                    }
+                    
+                    // Check if categories match detected language
+                    const hasArabicCategories = categories.some(cat => /[\u0600-\u06FF]/.test(cat));
+                    const hasEnglishCategories = categories.some(cat => /^[a-zA-Z\s&]+$/.test(cat));
+                    
+                    if (detectedLang === 'ar' && hasArabicCategories) {
+                        html += `<p class="success">✅ ممتاز: فئات عربية للكلام العربي!</p>`;
+                    } else if (detectedLang === 'en' && hasEnglishCategories) {
+                        html += `<p class="success">✅ Perfect: English categories for English speech!</p>`;
+                    } else if (detectedLang === 'mixed') {
+                        html += `<p class="info">ℹ️ كلام مختلط: استخدام الفئات الافتراضية</p>`;
+                    }
+                    
+                    html += `<h5>📈 الملخص:</h5>`;
+                    html += `<p>📊 إجمالي المعاملات: ${data.data.analysis.summary.total_transactions}</p>`;
+                    html += `<p>💸 إجمالي المصروفات: ${data.data.analysis.summary.total_expenses} جنيه</p>`;
+                    html += `<p>🏷️ الفئات: ${JSON.stringify(data.data.analysis.summary.categories, null, 2)}</p>`;
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<h4 class="error">❌ خطأ: ${description}</h4><p>الحالة: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h4 class="error">❌ خطأ في الشبكة: ${description}</h4><p>${error.message}</p>`;
+            }
+        }
+        
+        function testArabicSpeech() {
+            testAPI('رحت كارفور واشتريت شوكولاتة بـ50 جنيه وبعدين جبت تذكرة مترو بـ20 جنيه', 'كلام عربي على جهاز إنجليزي', 'result-arabic', 'ar');
+        }
+        
+        function testEnglishSpeech() {
+            testAPI('I went to the mall and bought chocolate for 100 EGP then got a bus ticket for 30 EGP', 'English speech on Arabic device', 'result-english', 'en');
+        }
+        
+        function testMixedSpeech() {
+            testAPI('أذهب إلى مونل عرب و أحصل على شوكولاتة باتشي بسعر 200 و أحصل على باس تاكيت بسعر 50', 'كلام مختلط', 'result-mixed', 'mixed');
+        }
+        
+        function testBusTicketMixed() {
+            testAPI('دفعت 25 جنيه باس تاكيت للشغل', 'باس تاكيت مختلط', 'result-bus', 'mixed');
+        }
+        
+        function testChocolateMixed() {
+            testAPI('رحت المول وجبت chocolate بـ80 جنيه', 'Chocolate في جملة عربية', 'result-chocolate', 'mixed');
+        }
+    </script>
+</body>
+</html>

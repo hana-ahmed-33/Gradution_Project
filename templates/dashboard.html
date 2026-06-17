@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم المالية - Finance Analyzer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .loading { display: none; }
+        .loading.show { display: block; }
+        .metric-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .expense-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .income-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .chart-container { position: relative; height: 300px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-chart-line text-2xl text-blue-600 ml-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">محلل الأموال الذكي</h1>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <button onclick="refreshData()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-sync-alt ml-2"></i>تحديث البيانات
+                    </button>
+                    <a href="/" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-home ml-2"></i>الرئيسية
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading text-center py-8">
+            <i class="fas fa-spinner fa-spin text-3xl text-blue-600"></i>
+            <p class="text-gray-600 mt-2">جاري تحميل البيانات...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <i class="fas fa-exclamation-triangle ml-2"></i>
+            <span id="error-text">حدث خطأ في تحميل البيانات</span>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" class="hidden">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card bg-white rounded-xl shadow-lg p-6 metric-card text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">إجمالي المعاملات</p>
+                            <p id="total-transactions" class="text-2xl font-bold">0</p>
+                        </div>
+                        <i class="fas fa-exchange-alt text-3xl text-white/60"></i>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg p-6 income-card text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">إجمالي الدخل</p>
+                            <p id="total-income" class="text-2xl font-bold">0 جنيه</p>
+                        </div>
+                        <i class="fas fa-arrow-up text-3xl text-white/60"></i>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg p-6 expense-card text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white/80 text-sm">إجمالي المصروفات</p>
+                            <p id="total-expenses" class="text-2xl font-bold">0 جنيه</p>
+                        </div>
+                        <i class="fas fa-arrow-down text-3xl text-white/60"></i>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">صافي المبلغ</p>
+                            <p id="net-amount" class="text-2xl font-bold text-gray-900">0 جنيه</p>
+                        </div>
+                        <i class="fas fa-balance-scale text-3xl text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Category Spending Chart -->
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-chart-pie ml-2 text-blue-600"></i>
+                        الإنفاق حسب الفئة
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Daily Spending Trend -->
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-chart-line ml-2 text-green-600"></i>
+                        اتجاه الإنفاق اليومي
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights and Recommendations -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Top Categories -->
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-trophy ml-2 text-yellow-600"></i>
+                        أعلى فئات الإنفاق
+                    </h3>
+                    <div id="top-categories" class="space-y-3">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-lightbulb ml-2 text-purple-600"></i>
+                        توصيات ذكية
+                    </h3>
+                    <div id="recommendations" class="space-y-3">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-history ml-2 text-indigo-600"></i>
+                        المعاملات الأخيرة
+                    </h3>
+                    <button onclick="loadMoreTransactions()" class="text-blue-600 hover:text-blue-800 text-sm">
+                        عرض المزيد
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التاريخ</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الفئة</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">العنصر</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المبلغ</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النوع</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-table" class="bg-white divide-y divide-gray-200">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let categoryChart = null;
+        let trendChart = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            showLoading(true);
+            hideError();
+
+            try {
+                // Load summary data
+                const summaryResponse = await fetch('/analytics/summary?days=30');
+                const summaryData = await summaryResponse.json();
+
+                if (!summaryData.success) {
+                    throw new Error(summaryData.message || 'Failed to load summary');
+                }
+
+                // Load insights
+                const insightsResponse = await fetch('/analytics/insights');
+                const insightsData = await insightsResponse.json();
+
+                // Load recent transactions
+                const transactionsResponse = await fetch('/analytics/transactions?limit=10');
+                const transactionsData = await transactionsResponse.json();
+
+                // Update UI
+                updateSummaryCards(summaryData.data);
+                updateCharts(summaryData.data, insightsData.success ? insightsData.data : {});
+                updateInsights(insightsData.success ? insightsData : {});
+                updateTransactionsTable(transactionsData.success ? transactionsData.data.transactions : []);
+
+                showDashboard();
+
+            } catch (error) {
+                console.error('Dashboard loading error:', error);
+                showError(error.message || 'فشل في تحميل البيانات');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function updateSummaryCards(data) {
+            document.getElementById('total-transactions').textContent = data.total_transactions || 0;
+            document.getElementById('total-income').textContent = `${(data.total_income || 0).toFixed(0)} جنيه`;
+            document.getElementById('total-expenses').textContent = `${(data.total_expenses || 0).toFixed(0)} جنيه`;
+            
+            const netAmount = (data.net_amount || 0);
+            const netElement = document.getElementById('net-amount');
+            netElement.textContent = `${netAmount.toFixed(0)} جنيه`;
+            netElement.className = `text-2xl font-bold ${netAmount >= 0 ? 'text-green-600' : 'text-red-600'}`;
+        }
+
+        function updateCharts(summaryData, insightsData) {
+            // Category Chart
+            const categories = summaryData.categories || {};
+            const categoryLabels = Object.keys(categories);
+            const categoryValues = Object.values(categories);
+
+            if (categoryChart) categoryChart.destroy();
+            
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                            '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Trend Chart
+            const dailySpending = insightsData.daily_spending || [];
+            const trendLabels = dailySpending.map(d => new Date(d.date).toLocaleDateString('ar-EG'));
+            const trendValues = dailySpending.map(d => d.amount);
+
+            if (trendChart) trendChart.destroy();
+            
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: trendLabels,
+                    datasets: [{
+                        label: 'الإنفاق اليومي',
+                        data: trendValues,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateInsights(insightsData) {
+            // Top Categories
+            const topCategories = insightsData.data?.top_categories || [];
+            const topCategoriesHtml = topCategories.slice(0, 5).map((cat, index) => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold ml-3">
+                            ${index + 1}
+                        </span>
+                        <span class="font-medium">${cat.category}</span>
+                    </div>
+                    <span class="text-lg font-bold text-gray-900">${cat.amount.toFixed(0)} جنيه</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('top-categories').innerHTML = topCategoriesHtml || 
+                '<p class="text-gray-500 text-center py-4">لا توجد بيانات كافية</p>';
+
+            // Recommendations
+            const recommendations = insightsData.insights?.recommendations || [];
+            const recommendationsHtml = recommendations.map(rec => `
+                <div class="p-3 bg-${rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'blue'}-50 rounded-lg border-r-4 border-${rec.priority === 'high' ? 'red' : rec.priority === 'medium' ? 'yellow' : 'blue'}-400">
+                    <p class="text-sm text-gray-700">${rec.message}</p>
+                    <span class="text-xs text-gray-500 mt-1 block">أولوية: ${rec.priority === 'high' ? 'عالية' : rec.priority === 'medium' ? 'متوسطة' : 'منخفضة'}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('recommendations').innerHTML = recommendationsHtml || 
+                '<p class="text-gray-500 text-center py-4">لا توجد توصيات حالياً</p>';
+        }
+
+        function updateTransactionsTable(transactions) {
+            const tableHtml = transactions.map(transaction => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${new Date(transaction.created_at).toLocaleDateString('ar-EG')}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${transaction.category || 'غير محدد'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${transaction.item || 'غير محدد'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        ${transaction.amount ? transaction.amount.toFixed(0) + ' جنيه' : 'غير محدد'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            transaction.transaction_type === 'INCOME' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }">
+                            ${transaction.transaction_type === 'INCOME' ? 'دخل' : 'مصروف'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('transactions-table').innerHTML = tableHtml || 
+                '<tr><td colspan="5" class="text-center py-4 text-gray-500">لا توجد معاملات</td></tr>';
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error-text').textContent = message;
+            document.getElementById('error-message').classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('error-message').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboard-content').classList.remove('hidden');
+        }
+
+        function refreshData() {
+            loadDashboardData();
+        }
+
+        function loadMoreTransactions() {
+            // Implement pagination
+            window.location.href = '/transactions';
+        }
+    </script>
+</body>
+</html>
