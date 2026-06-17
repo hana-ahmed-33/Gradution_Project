@@ -1,0 +1,9 @@
+@echo off
+echo Initializing Git repository...
+git init
+echo Adding remote origin...
+git remote add origin https://github.com/hana-ahmed-33/Gradution_Project.git
+echo Checking status...
+git status
+echo Done!
+pause

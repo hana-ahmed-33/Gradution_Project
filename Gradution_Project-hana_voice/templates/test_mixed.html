@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>اختبار التحليل المختلط (عربي/إنجليزي)</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+        .test-case { margin: 20px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; background: white; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .transaction { margin: 10px 0; padding: 10px; border: 1px solid #eee; background: #fafafa; }
+        button { padding: 10px 20px; margin: 5px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 اختبار التحليل المحسن للغة المختلطة</h1>
+    
+    <div class="test-case">
+        <h3>📝 اختبار المثال الأصلي للمستخدم:</h3>
+        <p><strong>النص:</strong> "أذهب إلى مونل عرب و أحصل على شوكولاتة باتشي بسعر 200 و أحصل على باس تاكيت بسعر 50 و أذهب إلى السوق و أحصل على 30 شابسي بسعر 2000"</p>
+        <p><strong>المتوقع:</strong></p>
+        <ul>
+            <li>شوكولاتة (200 جنيه) → طعام وشراب ✅</li>
+            <li>باس تاكيت (50 جنيه) → مواصلات ✅</li>
+            <li>شابسي (2000 جنيه) → طعام وشراب ✅</li>
+            <li>يجب استخراج كل المبالغ: 200, 50, 2000 ✅</li>
+        </ul>
+        <button onclick="testOriginalExample()">اختبار المثال الأصلي</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h3>🚌 اختبار تذكرة الباص بالإنجليزية:</h3>
+        <p><strong>النص:</strong> "I bought a bus ticket for 50 pounds"</p>
+        <p><strong>المتوقع:</strong> مواصلات (50 جنيه)</p>
+        <button onclick="testBusTicketEnglish()">اختبار تذكرة الباص</button>
+        <div id="result2" class="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h3>🍫 اختبار الشوكولاتة بالإنجليزية:</h3>
+        <p><strong>النص:</strong> "I got chocolate from the mall for 100 EGP"</p>
+        <p><strong>المتوقع:</strong> طعام وشراب (100 جنيه)</p>
+        <button onclick="testChocolateEnglish()">اختبار الشوكولاتة</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h3>🛒 اختبار التسوق المختلط:</h3>
+        <p><strong>النص:</strong> "رحت المول واشتريت chips بـ30 جنيه و chocolate بـ50 جنيه"</p>
+        <p><strong>المتوقع:</strong> طعام وشراب للاثنين</p>
+        <button onclick="testMixedShopping()">اختبار التسوق المختلط</button>
+        <div id="result4" class="result"></div>
+    </div>
+
+    <script>
+        async function testAPI(text, description, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = `<h4>🔄 جاري الاختبار: ${description}</h4><p>النص: ${text}</p><p>انتظر...</p>`;
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: 'auto'  // Auto-detect language
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<h4 class="success">✅ نجح: ${description}</h4>`;
+                    html += `<p><strong>النص:</strong> ${text}</p>`;
+                    html += `<p><strong>اللغة المكتشفة:</strong> ${data.data.analysis.language_detected}</p>`;
+                    html += `<h5>المعاملات المستخرجة:</h5>`;
+                    
+                    if (data.data.analysis.transactions.length === 0) {
+                        html += `<p class="error">❌ لم يتم العثور على معاملات!</p>`;
+                    } else {
+                        data.data.analysis.transactions.forEach((t, i) => {
+                            html += `<div class="transaction">`;
+                            html += `<strong>معاملة ${i+1}:</strong><br>`;
+                            html += `المبلغ: ${t.amount} جنيه<br>`;
+                            html += `الفئة: <span style="color: blue; font-weight: bold;">${t.category}</span><br>`;
+                            html += `الصنف: ${t.item}<br>`;
+                            html += `المكان: ${t.merchant || 'غير محدد'}<br>`;
+                            html += `النص المستخرج: ${t.extracted_text}<br>`;
+                            html += `</div>`;
+                        });
+                    }
+                    
+                    // Check for issues
+                    const categories = data.data.analysis.transactions.map(t => t.category);
+                    if (categories.includes('أخرى')) {
+                        html += `<p class="error">❌ مشكلة: وُجدت فئة 'أخرى' - يجب إزالتها!</p>`;
+                    } else {
+                        html += `<p class="success">✅ ممتاز: لا توجد فئة 'أخرى'!</p>`;
+                    }
+                    
+                    html += `<h5>الملخص:</h5>`;
+                    html += `<p>إجمالي المعاملات: ${data.data.analysis.summary.total_transactions}</p>`;
+                    html += `<p>إجمالي المصروفات: ${data.data.analysis.summary.total_expenses} جنيه</p>`;
+                    html += `<p>الفئات: ${JSON.stringify(data.data.analysis.summary.categories, null, 2)}</p>`;
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<h4 class="error">❌ خطأ: ${description}</h4><p>الحالة: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h4 class="error">❌ خطأ في الشبكة: ${description}</h4><p>${error.message}</p>`;
+            }
+        }
+        
+        function testOriginalExample() {
+            testAPI('أذهب إلى مونل عرب و أحصل على شوكولاتة باتشي بسعر 200 و أحصل على باس تاكيت بسعر 50 و أذهب إلى السوق و أحصل على 30 شابسي بسعر 2000', 'المثال الأصلي', 'result1');
+        }
+        
+        function testBusTicketEnglish() {
+            testAPI('I bought a bus ticket for 50 pounds', 'تذكرة الباص بالإنجليزية', 'result2');
+        }
+        
+        function testChocolateEnglish() {
+            testAPI('I got chocolate from the mall for 100 EGP', 'الشوكولاتة بالإنجليزية', 'result3');
+        }
+        
+        function testMixedShopping() {
+            testAPI('رحت المول واشتريت chips بـ30 جنيه و chocolate بـ50 جنيه', 'التسوق المختلط', 'result4');
+        }
+    </script>
+</body>
+</html>

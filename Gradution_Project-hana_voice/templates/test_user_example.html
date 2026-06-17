@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>اختبار مثال المستخدم المحدد</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+        .test-section { margin: 30px 0; padding: 20px; border: 2px solid #dc3545; background: #f8f9fa; border-radius: 10px; }
+        .result { margin: 10px 0; padding: 15px; border: 1px solid #ccc; background: #fafafa; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; font-weight: bold; }
+        .transaction { margin: 10px 0; padding: 10px; border: 1px solid #eee; background: #f9f9f9; border-radius: 3px; }
+        button { padding: 15px 30px; margin: 10px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; background: #dc3545; color: white; }
+        h1 { color: #dc3545; text-align: center; }
+        .problem { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
+        .expected { background: #d1ecf1; padding: 15px; border-left: 4px solid #17a2b8; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔥 اختبار مثال المستخدم المحدد</h1>
+    
+    <div class="problem">
+        <h3>❌ المشاكل الحالية:</h3>
+        <ul>
+            <li><strong>راجري يدفلي التكيف بـ4000 جنيه</strong> → كان Shopping، المفروض Bills & Utilities</li>
+            <li><strong>جبت شبسي بـ10 جنيه</strong> → كان Shopping، المفروض Food & Drinks</li>
+            <li><strong>رحت السيدالية جبت دوة بـ200 جنيه</strong> → كان Shopping، المفروض Health & Beauty</li>
+        </ul>
+    </div>
+
+    <div class="expected">
+        <h3>✅ النتائج المتوقعة بعد الإصلاح:</h3>
+        <ul>
+            <li><strong>راجري التكيف (4000 جنيه)</strong> → Bills & Utilities</li>
+            <li><strong>شبسي (10 جنيه)</strong> → Food & Drinks</li>
+            <li><strong>دواء من الصيدلية (200 جنيه)</strong> → Health & Beauty</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 اختبار المثال الكامل</h2>
+        
+        <p><strong>النص الأصلي:</strong></p>
+        <p style="background: #e9ecef; padding: 10px; border-radius: 5px; font-family: monospace;">
+            "النهارده انا جبت راجري ندفلي التكيف بتاعي وخد مني 4000 جنيه بعدين رحت السوير ماركت وجبت شبسي ب10 جنيه ورحت السيدالية جبت دوة ب200 جنيه"
+        </p>
+        
+        <button onclick="testUserExample()">🔥 اختبار المثال المحدد</button>
+        
+        <div id="result-user-example" class="result">
+            اضغط الزر لاختبار المثال...
+        </div>
+    </div>
+
+    <script>
+        async function testUserExample() {
+            const resultDiv = document.getElementById('result-user-example');
+            const originalText = 'النهارده انا جبت راجري ندفلي التكيف بتاعي وخد مني 4000 جنيه بعدين رحت السوير ماركت وجبت شبسي ب10 جنيه ورحت السيدالية جبت دوة ب200 جنيه';
+            
+            resultDiv.innerHTML = `<h4>🔄 جاري اختبار الإصلاحات...</h4><p>انتظر...</p>`;
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: originalText,
+                        language: 'auto'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let html = `<h4 class="success">🧠 نتائج الاختبار</h4>`;
+                    html += `<h5>📊 المعاملات المكتشفة:</h5>`;
+                    
+                    if (data.data.analysis.transactions.length === 0) {
+                        html += `<p class="error">❌ لم يتم العثور على معاملات!</p>`;
+                    } else {
+                        data.data.analysis.transactions.forEach((t, i) => {
+                            html += `<div class="transaction">`;
+                            html += `<strong>معاملة ${i+1}:</strong><br>`;
+                            html += `💰 المبلغ: <span style="color: #28a745; font-weight: bold;">${t.amount || 'غير محدد'} EGP</span><br>`;
+                            html += `🏷️ الفئة: <span style="color: #007bff; font-weight: bold; font-size: 16px;">${t.category}</span><br>`;
+                            html += `📦 الصنف: ${t.item}<br>`;
+                            html += `📝 النص: ${t.extracted_text}<br>`;
+                            
+                            // Validation for each transaction
+                            if (t.extracted_text.includes('راجري') && t.extracted_text.includes('التكيف')) {
+                                if (t.category === 'Bills & Utilities') {
+                                    html += `<span class="success">✅ صحيح: راجري التكيف = Bills & Utilities</span><br>`;
+                                } else {
+                                    html += `<span class="error">❌ خطأ: راجري التكيف يجب يكون Bills & Utilities مش ${t.category}</span><br>`;
+                                }
+                            }
+                            
+                            if (t.extracted_text.includes('شبسي')) {
+                                if (t.category === 'Food & Drinks') {
+                                    html += `<span class="success">✅ صحيح: شبسي = Food & Drinks</span><br>`;
+                                } else {
+                                    html += `<span class="error">❌ خطأ: شبسي يجب يكون Food & Drinks مش ${t.category}</span><br>`;
+                                }
+                            }
+                            
+                            if (t.extracted_text.includes('السيدالية') || t.extracted_text.includes('دوة')) {
+                                if (t.category === 'Health & Beauty') {
+                                    html += `<span class="success">✅ صحيح: دواء من الصيدلية = Health & Beauty</span><br>`;
+                                } else {
+                                    html += `<span class="error">❌ خطأ: دواء من الصيدلية يجب يكون Health & Beauty مش ${t.category}</span><br>`;
+                                }
+                            }
+                            
+                            html += `</div>`;
+                        });
+                    }
+                    
+                    // Overall validation
+                    const categories = data.data.analysis.transactions.map(t => t.category);
+                    const uniqueCategories = [...new Set(categories)];
+                    
+                    html += `<h5>📈 تقييم الإصلاحات:</h5>`;
+                    html += `<p class="info">🏷️ الفئات المستخدمة: ${uniqueCategories.join(', ')}</p>`;
+                    
+                    // Check if all categories are correct
+                    const hasCorrectCategories = categories.includes('Bills & Utilities') && 
+                                                categories.includes('Food & Drinks') && 
+                                                categories.includes('Health & Beauty');
+                    
+                    if (hasCorrectCategories) {
+                        html += `<p class="success">🎉 ممتاز! كل الفئات صحيحة الآن!</p>`;
+                    } else {
+                        html += `<p class="error">❌ لسه في مشاكل في التصنيف</p>`;
+                    }
+                    
+                    html += `<h5>📊 الملخص:</h5>`;
+                    html += `<p>💸 إجمالي المصروفات: ${data.data.analysis.summary.total_expenses} EGP</p>`;
+                    html += `<p>⚡ وقت المعالجة: ${data.data.analysis.processing_time_ms}ms</p>`;
+                    
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<h4 class="error">❌ خطأ</h4><p>Status: ${response.status}</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h4 class="error">❌ خطأ في الشبكة</h4><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
